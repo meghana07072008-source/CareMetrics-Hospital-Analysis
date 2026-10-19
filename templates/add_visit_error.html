@@ -1,0 +1,834 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Patient Visit | CareMetrics</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        :root {
+            --purple: #7055e8;
+            --purple-dark: #563bc6;
+            --purple-light: #f0edff;
+            --background: #f7f8fc;
+            --text: #24243a;
+            --muted: #9292a8;
+            --border: #eae9f2;
+            --green: #16865e;
+            --red: #cf5147;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "DM Sans", sans-serif;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .sidebar {
+            width: 248px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 30px 20px;
+            background: white;
+            border-right: 1px solid #efeff5;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 46px;
+            padding: 0 8px;
+        }
+
+        .brand-icon {
+            width: 43px;
+            height: 43px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #8469ff, #6044d6);
+            color: white;
+            font-size: 21px;
+        }
+
+        .brand-name {
+            font: 800 21px "Plus Jakarta Sans", sans-serif;
+            letter-spacing: -1px;
+        }
+
+        .brand-name span {
+            color: var(--purple);
+        }
+
+        .menu-label {
+            color: #aaaabd;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.6px;
+            padding: 0 12px;
+            margin-bottom: 13px;
+        }
+
+        .nav-links {
+            display: grid;
+            gap: 8px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 14px 15px;
+            border-radius: 12px;
+            color: #77778e;
+            font-size: 13px;
+            font-weight: 600;
+            transition: .2s;
+        }
+
+        .nav-link i {
+            width: 19px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--purple-light);
+            color: var(--purple);
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding: 18px;
+            border-radius: 16px;
+            background: #f7f5ff;
+        }
+
+        .sidebar-bottom i {
+            color: var(--purple);
+            font-size: 21px;
+        }
+
+        .sidebar-bottom h4 {
+            font-size: 13px;
+            margin: 13px 0 5px;
+        }
+
+        .sidebar-bottom p {
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        .main {
+            margin-left: 248px;
+            padding: 32px 40px 45px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .eyebrow {
+            color: var(--purple);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.7px;
+            text-transform: uppercase;
+            margin-bottom: 9px;
+        }
+
+        h1, h2, h3 {
+            font-family: "Plus Jakarta Sans", sans-serif;
+        }
+
+        h1 {
+            font-size: clamp(25px, 3vw, 32px);
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
+            margin-top: 8px;
+        }
+
+        .avatar {
+            width: 43px;
+            height: 43px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            color: white;
+            background: linear-gradient(135deg, #b8a7ff, #7557e9);
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 24px;
+        }
+
+        .breadcrumb a {
+            color: var(--purple);
+            font-weight: 600;
+        }
+
+        .breadcrumb i {
+            font-size: 10px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 280px;
+            gap: 23px;
+            align-items: start;
+        }
+
+        .form-card,
+        .info-card {
+            background: white;
+            border: 1px solid #f0eff6;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(44, 37, 93, .045);
+        }
+
+        .form-card {
+            overflow: hidden;
+        }
+
+        .form-header {
+            padding: 25px 28px;
+            border-bottom: 1px solid #f0eff6;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .form-header-icon {
+            width: 49px;
+            height: 49px;
+            display: grid;
+            place-items: center;
+            border-radius: 15px;
+            background: var(--purple-light);
+            color: var(--purple);
+            font-size: 20px;
+        }
+
+        .form-header h2 {
+            font-size: 17px;
+        }
+
+        .form-header p {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .form-body {
+            padding: 28px;
+        }
+
+        .messages {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .message {
+            padding: 13px 15px;
+            border-radius: 11px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .message.success {
+            color: var(--green);
+            background: #eaf8f1;
+            border: 1px solid #d5f0e2;
+        }
+
+        .message.error {
+            color: var(--red);
+            background: #fff0ed;
+            border: 1px solid #ffddd6;
+        }
+
+        .form-section-title {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .form-section-title i {
+            color: var(--purple);
+        }
+
+        .fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px 18px;
+        }
+
+        .field {
+            min-width: 0;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 9px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #42425b;
+        }
+
+        .required {
+            color: #e26b62;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-wrap > i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9997b0;
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        input,
+        select {
+            width: 100%;
+            min-width: 0;
+            height: 49px;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            outline: none;
+            background: #fdfdff;
+            color: var(--text);
+            font: 500 12px "DM Sans", sans-serif;
+            padding: 0 13px 0 41px;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--purple);
+            box-shadow: 0 0 0 3px #7055e81c;
+            background: white;
+        }
+
+        input::placeholder {
+            color: #aaaabd;
+        }
+
+        .field-hint {
+            color: var(--muted);
+            font-size: 10px;
+            margin-top: 8px;
+            line-height: 1.6;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid #f0eff6;
+            margin: 27px 0 23px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .button {
+            min-height: 45px;
+            padding: 0 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            border-radius: 11px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .button-secondary {
+            background: white;
+            border: 1px solid var(--border);
+            color: #77778e;
+        }
+
+        .button-primary {
+            background: linear-gradient(110deg, #7055e8, #8469f2);
+            border: none;
+            color: white;
+            box-shadow: 0 6px 15px #7055e82b;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+        }
+
+        .info-card {
+            padding: 23px;
+            margin-bottom: 18px;
+        }
+
+        .info-icon {
+            width: 43px;
+            height: 43px;
+            display: grid;
+            place-items: center;
+            border-radius: 13px;
+            background: var(--purple-light);
+            color: var(--purple);
+            font-size: 18px;
+            margin-bottom: 17px;
+        }
+
+        .info-card h3 {
+            font-size: 14px;
+            margin-bottom: 9px;
+        }
+
+        .info-card > p {
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        .steps {
+            display: grid;
+            gap: 19px;
+            margin-top: 22px;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .step-number {
+            flex-shrink: 0;
+            width: 29px;
+            height: 29px;
+            display: grid;
+            place-items: center;
+            border-radius: 10px;
+            color: var(--purple);
+            background: var(--purple-light);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .step h4 {
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+
+        .step p {
+            color: var(--muted);
+            font-size: 10px;
+            line-height: 1.7;
+        }
+
+        .privacy-note {
+            padding: 15px;
+            background: #f7f8fc;
+            border-radius: 12px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            margin-top: 20px;
+        }
+
+        .privacy-note i {
+            color: var(--green);
+            margin-top: 2px;
+        }
+
+        .privacy-note p {
+            color: #77778e;
+            font-size: 10px;
+            line-height: 1.7;
+        }
+
+        .footer {
+            text-align: center;
+            color: #a2a2b5;
+            font-size: 11px;
+            margin-top: 32px;
+        }
+
+        @media (max-width: 1100px) {
+            .main {
+                padding: 28px 22px;
+            }
+
+            .sidebar {
+                width: 215px;
+            }
+
+            .main {
+                margin-left: 215px;
+            }
+
+            .layout {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .side-info {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 18px;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .sidebar {
+                width: 70px;
+                padding: 20px 9px;
+                align-items: center;
+            }
+
+            .brand {
+                padding: 0;
+                margin-bottom: 35px;
+            }
+
+            .brand-name,
+            .menu-label,
+            .nav-link span,
+            .sidebar-bottom {
+                display: none;
+            }
+
+            .nav-links {
+                width: 100%;
+            }
+
+            .nav-link {
+                justify-content: center;
+                padding: 14px 0;
+            }
+
+            .nav-link i {
+                width: auto;
+            }
+
+            .main {
+                margin-left: 70px;
+                padding: 22px 14px;
+            }
+
+            .fields {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+
+            .field.full {
+                grid-column: auto;
+            }
+
+            .form-header,
+            .form-body {
+                padding: 20px;
+            }
+
+            .side-info {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column-reverse;
+            }
+
+            .form-actions .button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+    <a class="brand" href="/">
+        <div class="brand-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+        <div class="brand-name">Care<span>Metrics</span></div>
+    </a>
+
+    <div class="menu-label">WORKSPACE</div>
+
+    <nav class="nav-links">
+        <a class="nav-link" href="/">
+            <i class="fa-solid fa-grid-2"></i><span>Dashboard</span>
+        </a>
+        <a class="nav-link active" href="/add-visit">
+            <i class="fa-solid fa-calendar-plus"></i><span>Patient Visits</span>
+        </a>
+        <a class="nav-link" href="/#department-section">
+            <i class="fa-solid fa-hospital"></i><span>Departments</span>
+        </a>
+        <a class="nav-link" href="/#analytics-section">
+            <i class="fa-solid fa-chart-line"></i><span>Analytics</span>
+        </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+        <i class="fa-solid fa-shield-heart"></i>
+        <h4>Healthcare insights</h4>
+        <p>Manage visit records and explore hospital activity in one place.</p>
+    </div>
+</aside>
+
+<main class="main">
+
+    <header class="topbar">
+        <div>
+            <div class="eyebrow">Patient management</div>
+            <h1>Add Patient Visit</h1>
+            <p class="subtitle">Create a new visit record in your hospital database.</p>
+        </div>
+        <div class="avatar"><i class="fa-solid fa-user-doctor"></i></div>
+    </header>
+
+    <div class="breadcrumb">
+        <a href="/"><i class="fa-solid fa-house"></i> Dashboard</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span>Patient Visits</span>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span>Add New</span>
+    </div>
+
+    <div class="layout">
+
+        <section class="form-card">
+            <div class="form-header">
+                <div class="form-header-icon">
+                    <i class="fa-solid fa-file-circle-plus"></i>
+                </div>
+                <div>
+                    <h2>Visit Information</h2>
+                    <p>Fill in the details below to record a patient visit.</p>
+                </div>
+            </div>
+
+            <div class="form-body">
+
+                <div class="messages">
+                    {% for category, message in get_flashed_messages(with_categories=true) %}
+                        <div class="message {{ category }}">
+                            {% if category == "success" %}
+                                <i class="fa-solid fa-circle-check"></i>
+                            {% else %}
+                                <i class="fa-solid fa-circle-exclamation"></i>
+                            {% endif %}
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <form action="{{ url_for('add_visit') }}" method="POST">
+
+                    <div class="form-section-title">
+                        <i class="fa-solid fa-clipboard-list"></i>
+                        Visit Details
+                    </div>
+
+                    <div class="fields">
+
+                        <div class="field full">
+                            <label for="patient_id">
+                                Select Patient <span class="required">*</span>
+                            </label>
+                            <div class="input-wrap">
+                                <i class="fa-solid fa-user"></i>
+                                <select id="patient_id" name="patient_id" required>
+                                    <option value="">Choose a patient</option>
+                                    {% for patient in patients %}
+                                        <option value="{{ patient.patient_id }}"
+                                            {% if request.form.get('patient_id') == patient.patient_id|string %}selected{% endif %}>
+                                            Patient #{{ patient.patient_id }} — {{ patient.age_band }}{% if patient.gender %} · {{ patient.gender }}{% endif %}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <p class="field-hint">Select the patient associated with this visit.</p>
+                        </div>
+
+                        <div class="field">
+                            <label for="department_id">
+                                Department <span class="required">*</span>
+                            </label>
+                            <div class="input-wrap">
+                                <i class="fa-solid fa-hospital"></i>
+                                <select id="department_id" name="department_id" required>
+                                    <option value="">Choose department</option>
+                                    {% for department in departments %}
+                                        <option value="{{ department.department_id }}"
+                                            {% if request.form.get('department_id') == department.department_id|string %}selected{% endif %}>
+                                            {{ department.department_name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label for="visit_date">
+                                Visit Date <span class="required">*</span>
+                            </label>
+                            <div class="input-wrap">
+                                <i class="fa-solid fa-calendar-days"></i>
+                                <input
+                                    type="date"
+                                    id="visit_date"
+                                    name="visit_date"
+                                    max="{{ today }}"
+                                    value="{{ request.form.get('visit_date', '') }}"
+                                    required>
+                            </div>
+                            <p class="field-hint">Future dates are not allowed.</p>
+                        </div>
+
+                        <div class="field full">
+                            <label for="visit_type">
+                                Visit Type <span class="required">*</span>
+                            </label>
+                            <div class="input-wrap">
+                                <i class="fa-solid fa-stethoscope"></i>
+                                <select id="visit_type" name="visit_type" required>
+                                    <option value="">Choose visit type</option>
+                                    <option value="Appointment" {% if request.form.get('visit_type') == 'Appointment' %}selected{% endif %}>Appointment</option>
+                                    <option value="Emergency" {% if request.form.get('visit_type') == 'Emergency' %}selected{% endif %}>Emergency</option>
+                                    <option value="Follow-up" {% if request.form.get('visit_type') == 'Follow-up' %}selected{% endif %}>Follow-up</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <hr class="divider">
+
+                    <div class="form-actions">
+                        <a href="/" class="button button-secondary">
+                            <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+                        </a>
+                        <button type="submit" class="button button-primary">
+                            <i class="fa-solid fa-check"></i> Save Patient Visit
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </section>
+
+        <aside class="side-info">
+
+            <section class="info-card">
+                <div class="info-icon"><i class="fa-solid fa-lightbulb"></i></div>
+                <h3>How it works</h3>
+                <p>Follow these simple steps to record a patient visit correctly.</p>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">01</div>
+                        <div>
+                            <h4>Choose a patient</h4>
+                            <p>Select an existing patient from the database.</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">02</div>
+                        <div>
+                            <h4>Enter visit details</h4>
+                            <p>Choose a department, date and visit type.</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">03</div>
+                        <div>
+                            <h4>Save the record</h4>
+                            <p>The visit is stored in MySQL and can be viewed in your dashboard.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="info-card">
+                <div class="info-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <h3>Data quality matters</h3>
+                <p>Make sure the selected patient and department are correct before saving the visit.</p>
+
+                <div class="privacy-note">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <p>Required fields are marked with an asterisk. Only use fictional, anonymized, or approved data for project demonstrations.</p>
+                </div>
+            </section>
+
+        </aside>
+    </div>
+
+    <footer class="footer">
+        CareMetrics · Hospital Patient Data Analysis System
+    </footer>
+
+</main>
+
+</body>
+</html>

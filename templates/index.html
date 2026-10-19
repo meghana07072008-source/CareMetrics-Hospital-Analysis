@@ -1,0 +1,1051 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareMetrics | Hospital Analytics</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        :root {
+            --purple: #7055e8;
+            --purple-dark: #563bc6;
+            --purple-light: #f0edff;
+            --background: #f7f8fc;
+            --white: #ffffff;
+            --text: #24243a;
+            --muted: #9292a8;
+            --border: #efeff5;
+            --green: #24a879;
+            --shadow: 0 8px 30px rgba(44, 37, 93, 0.045);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "DM Sans", sans-serif;
+            color: var(--text);
+            background: var(--background);
+        }
+
+        button, a {
+            font: inherit;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .sidebar {
+            width: 248px;
+            height: 100vh;
+            position: fixed;
+            inset: 0 auto 0 0;
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            z-index: 5;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 8px;
+            margin-bottom: 46px;
+        }
+
+        .brand-icon {
+            width: 43px;
+            height: 43px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #8469ff, #6044d6);
+            color: white;
+            display: grid;
+            place-items: center;
+            font-size: 21px;
+            box-shadow: 0 7px 18px #7055e833;
+        }
+
+        .brand-name {
+            font: 800 21px "Plus Jakarta Sans", sans-serif;
+            letter-spacing: -1px;
+        }
+
+        .brand-name span {
+            color: var(--purple);
+        }
+
+        .menu-label {
+            padding: 0 12px;
+            margin-bottom: 13px;
+            color: #aaaabd;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.6px;
+        }
+
+        .nav-links {
+            display: grid;
+            gap: 8px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 14px 15px;
+            border-radius: 12px;
+            color: #77778e;
+            font-size: 13px;
+            font-weight: 600;
+            transition: .2s;
+        }
+
+        .nav-link i {
+            width: 19px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--purple-light);
+            color: var(--purple);
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding: 18px;
+            background: #f7f5ff;
+            border-radius: 16px;
+        }
+
+        .sidebar-bottom i {
+            color: var(--purple);
+            font-size: 21px;
+        }
+
+        .sidebar-bottom h4 {
+            margin: 13px 0 5px;
+            font-size: 13px;
+        }
+
+        .sidebar-bottom p {
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        .main {
+            margin-left: 248px;
+            padding: 30px 38px 45px;
+            max-width: 1800px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 33px;
+        }
+
+        .eyebrow {
+            color: var(--purple);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.7px;
+            text-transform: uppercase;
+            margin-bottom: 9px;
+        }
+
+        h1, h2, h3 {
+            font-family: "Plus Jakarta Sans", sans-serif;
+        }
+
+        h1 {
+            font-size: clamp(24px, 2.5vw, 32px);
+            letter-spacing: -1.2px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .icon-button {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            background: white;
+            color: #77778e;
+        }
+
+        .avatar {
+            width: 43px;
+            height: 43px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            color: white;
+            font-weight: 700;
+            background: linear-gradient(135deg, #b8a7ff, #7557e9);
+        }
+
+        .welcome-strip {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding: 24px 27px;
+            margin-bottom: 24px;
+            border-radius: 19px;
+            color: white;
+            background: linear-gradient(110deg, #7055e8, #8b73f5);
+            box-shadow: 0 12px 30px #7055e822;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .welcome-strip::after {
+            content: "";
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            right: 7%;
+            top: -145px;
+            border: 35px solid #ffffff13;
+            border-radius: 50%;
+        }
+
+        .welcome-strip h2 {
+            font-size: 18px;
+            margin-bottom: 7px;
+        }
+
+        .welcome-strip p {
+            color: #e8e2ff;
+            font-size: 12px;
+        }
+
+        .add-button {
+            position: relative;
+            z-index: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            padding: 12px 17px;
+            border: none;
+            border-radius: 11px;
+            background: white;
+            color: var(--purple-dark);
+            font-weight: 700;
+            font-size: 12px;
+            white-space: nowrap;
+            transition: .2s;
+        }
+
+        .add-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px #34208033;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            padding: 23px;
+            border: 1px solid #f0eff6;
+            border-radius: 18px;
+            background: white;
+            box-shadow: var(--shadow);
+            transition: transform .2s, box-shadow .2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 32px #30245d0d;
+        }
+
+        .stat-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 22px;
+        }
+
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            font-size: 18px;
+        }
+
+        .stat-icon.purple {
+            background: #f0edff;
+            color: #7055e8;
+        }
+
+        .stat-icon.teal {
+            background: #e7f9f3;
+            color: #23a87b;
+        }
+
+        .stat-icon.coral {
+            background: #fff0eb;
+            color: #f08062;
+        }
+
+        .stat-tag {
+            padding: 6px 9px;
+            background: #f7f5ff;
+            color: var(--purple);
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .stat-card p {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .stat-number {
+            font: 800 31px "Plus Jakarta Sans", sans-serif;
+            letter-spacing: -1px;
+            margin: 8px 0;
+        }
+
+        .stat-foot {
+            font-size: 11px;
+            color: #9999ae;
+        }
+
+        .stat-foot i {
+            color: var(--green);
+            margin-right: 5px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 17px;
+        }
+
+        .section-heading h2 {
+            font-size: 18px;
+            letter-spacing: -.5px;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            min-width: 0;
+            padding: 23px;
+            border: 1px solid #f0eff6;
+            border-radius: 18px;
+            background: white;
+            box-shadow: var(--shadow);
+        }
+
+        .panel-heading {
+            display: flex;
+            align-items: start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .panel-heading h3 {
+            font-size: 14px;
+        }
+
+        .panel-heading p {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 6px;
+        }
+
+        .panel-badge {
+            padding: 7px 10px;
+            border-radius: 9px;
+            background: #f4f1ff;
+            color: var(--purple);
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .chart-image {
+            display: block;
+            width: 100%;
+            height: 265px;
+            object-fit: contain;
+            object-position: center;
+        }
+
+        .chart-message {
+            display: none;
+            min-height: 200px;
+            place-items: center;
+            text-align: center;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .table-panel {
+            padding: 24px;
+            margin-bottom: 25px;
+            border: 1px solid #f0eff6;
+            border-radius: 18px;
+            background: white;
+            box-shadow: var(--shadow);
+        }
+
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            padding: 15px 13px;
+            background: #faf9fe;
+            color: #9292a8;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        th:first-child {
+            border-radius: 9px 0 0 9px;
+        }
+
+        th:last-child {
+            border-radius: 0 9px 9px 0;
+        }
+
+        td {
+            padding: 16px 13px;
+            border-bottom: 1px solid #f2f1f7;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: #fcfbff;
+        }
+
+        .patient-code {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            font-weight: 700;
+        }
+
+        .patient-dot {
+            width: 31px;
+            height: 31px;
+            display: grid;
+            place-items: center;
+            border-radius: 10px;
+            background: #f0edff;
+            color: var(--purple);
+        }
+
+        .visit-pill {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            background: #f0edff;
+            color: #7055e8;
+        }
+
+        .visit-pill.emergency {
+            background: #fff0ed;
+            color: #e46c55;
+        }
+
+        .visit-pill.follow-up {
+            background: #e8f8f1;
+            color: #21966d;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .simple-table td:last-child {
+            text-align: right;
+            font-weight: 700;
+        }
+
+        .footer {
+            text-align: center;
+            color: #a2a2b5;
+            font-size: 11px;
+            padding: 10px 0;
+        }
+
+        .status-message {
+            color: var(--muted);
+            padding: 25px 0;
+            font-size: 12px;
+        }
+
+        @media (max-width: 1100px) {
+            .main {
+                padding: 25px 22px;
+            }
+
+            .sidebar {
+                width: 215px;
+                padding: 25px 14px;
+            }
+
+            .main {
+                margin-left: 215px;
+            }
+
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .sidebar {
+                width: 70px;
+                padding: 20px 9px;
+                align-items: center;
+            }
+
+            .brand {
+                padding: 0;
+                margin-bottom: 35px;
+            }
+
+            .brand-name,
+            .menu-label,
+            .nav-link span,
+            .sidebar-bottom {
+                display: none;
+            }
+
+            .nav-links {
+                width: 100%;
+            }
+
+            .nav-link {
+                justify-content: center;
+                padding: 14px 0;
+            }
+
+            .nav-link i {
+                width: auto;
+            }
+
+            .main {
+                margin-left: 70px;
+                padding: 22px 14px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .stat-card {
+                padding: 18px;
+            }
+
+            .stat-top {
+                margin-bottom: 13px;
+            }
+
+            .welcome-strip {
+                align-items: flex-start;
+                flex-direction: column;
+                padding: 21px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+            }
+
+            .top-actions .icon-button {
+                display: none;
+            }
+
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+
+            .panel,
+            .table-panel {
+                padding: 16px;
+            }
+
+            .chart-image {
+                height: 230px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+    <a class="brand" href="/">
+        <div class="brand-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+        <div class="brand-name">Care<span>Metrics</span></div>
+    </a>
+
+    <div class="menu-label">WORKSPACE</div>
+
+    <nav class="nav-links">
+        <a class="nav-link active" href="/">
+            <i class="fa-solid fa-grid-2"></i><span>Dashboard</span>
+        </a>
+        <a class="nav-link" href="/add-visit">
+            <i class="fa-solid fa-calendar-plus"></i><span>Patient Visits</span>
+        </a>
+        <a class="nav-link" href="#department-section">
+            <i class="fa-solid fa-hospital"></i><span>Departments</span>
+        </a>
+        <a class="nav-link" href="#analytics-section">
+            <i class="fa-solid fa-chart-line"></i><span>Analytics</span>
+        </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+        <i class="fa-solid fa-shield-heart"></i>
+        <h4>Healthcare insights</h4>
+        <p>Understand visit patterns and explore hospital activity in one place.</p>
+    </div>
+</aside>
+
+<main class="main">
+
+    <header class="topbar">
+        <div>
+            <div class="eyebrow">Hospital intelligence</div>
+            <h1>Hospital Overview</h1>
+            <p class="subtitle">Monitor patient activity and visit trends at a glance.</p>
+        </div>
+
+        <div class="top-actions">
+            <button class="icon-button" title="Refresh dashboard" onclick="loadDashboard()">
+                <i class="fa-solid fa-arrows-rotate"></i>
+            </button>
+            <div class="avatar"><i class="fa-solid fa-user-doctor"></i></div>
+        </div>
+    </header>
+
+    <section class="welcome-strip">
+        <div>
+            <h2>Your hospital, at a glance.</h2>
+            <p>Explore patient visits, department activity, and monthly trends.</p>
+        </div>
+        <a href="/add-visit" class="add-button">
+            <i class="fa-solid fa-plus"></i> Add Patient Visit
+        </a>
+    </section>
+
+    <section class="stats-grid">
+        <article class="stat-card">
+            <div class="stat-top">
+                <div class="stat-icon purple"><i class="fa-solid fa-users"></i></div>
+                <span class="stat-tag">Patient records</span>
+            </div>
+            <p>Total Patients</p>
+            <div class="stat-number" id="patients">—</div>
+            <div class="stat-foot">Registered in the database</div>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-top">
+                <div class="stat-icon teal"><i class="fa-solid fa-calendar-check"></i></div>
+                <span class="stat-tag">Visit records</span>
+            </div>
+            <p>Total Visits</p>
+            <div class="stat-number" id="visits">—</div>
+            <div class="stat-foot"><i class="fa-solid fa-circle-check"></i> Recorded hospital visits</div>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-top">
+                <div class="stat-icon coral"><i class="fa-solid fa-hospital-user"></i></div>
+                <span class="stat-tag">Hospital units</span>
+            </div>
+            <p>Total Departments</p>
+            <div class="stat-number" id="departments">—</div>
+            <div class="stat-foot">Departments in the database</div>
+        </article>
+    </section>
+
+    <section id="analytics-section">
+        <div class="section-heading">
+            <div>
+                <h2>Analytics & Insights</h2>
+                <p>Visual summaries of hospital activity.</p>
+            </div>
+        </div>
+
+        <div class="chart-grid">
+            <article class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <h3>Monthly Visit Trends</h3>
+                        <p>Visits grouped by month</p>
+                    </div>
+                    <span class="panel-badge"><i class="fa-solid fa-chart-column"></i> Trends</span>
+                </div>
+                <img id="monthlyChart" class="chart-image" alt="Monthly visit trends chart">
+                <div id="monthlyChartMessage" class="chart-message">Monthly chart is unavailable.</div>
+            </article>
+
+            <article class="panel" id="department-section">
+                <div class="panel-heading">
+                    <div>
+                        <h3>Visits by Department</h3>
+                        <p>Distribution across hospital units</p>
+                    </div>
+                    <span class="panel-badge"><i class="fa-solid fa-chart-pie"></i> Overview</span>
+                </div>
+                <img id="departmentChart" class="chart-image" alt="Department visit chart">
+                <div id="departmentChartMessage" class="chart-message">Department chart is unavailable.</div>
+            </article>
+        </div>
+
+        <div class="chart-grid">
+            <article class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <h3>Patient Age Groups</h3>
+                        <p>Visit distribution by age band</p>
+                    </div>
+                    <span class="panel-badge"><i class="fa-solid fa-chart-bar"></i> Demographics</span>
+                </div>
+                <img id="ageChart" class="chart-image" alt="Age group visit chart">
+                <div id="ageChartMessage" class="chart-message">Age chart is unavailable.</div>
+            </article>
+
+            <article class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <h3>Department Summary</h3>
+                        <p>Visit counts for each department</p>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table class="simple-table">
+                        <thead><tr><th>Department</th><th>Visits</th></tr></thead>
+                        <tbody id="departmentTable">
+                            <tr><td colspan="2" class="status-message">Loading departments...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </div>
+
+        <article class="table-panel">
+            <div class="section-heading">
+                <div>
+                    <h2>Recent Patient Activity</h2>
+                    <p>Latest visit records saved in your database.</p>
+                </div>
+                <a href="/add-visit" class="add-button">
+                    <i class="fa-solid fa-plus"></i> New Visit
+                </a>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Age Group</th>
+                            <th>Department</th>
+                            <th>Visit Date</th>
+                            <th>Visit Type</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentVisits">
+                        <tr><td colspan="5" class="status-message">Loading recent activity...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+
+        <div class="two-column">
+            <article class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <h3>Age Group Summary</h3>
+                        <p>Visits by patient age band</p>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table class="simple-table">
+                        <thead><tr><th>Age group</th><th>Visits</th></tr></thead>
+                        <tbody id="ageTable">
+                            <tr><td colspan="2" class="status-message">Loading age analysis...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+
+            <article class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <h3>Monthly Activity</h3>
+                        <p>Monthly visit totals</p>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table class="simple-table">
+                        <thead><tr><th>Month</th><th>Visits</th></tr></thead>
+                        <tbody id="monthlyTable">
+                            <tr><td colspan="2" class="status-message">Loading monthly data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <footer class="footer">
+        CareMetrics · Hospital Patient Data Analysis System
+    </footer>
+</main>
+
+<script>
+    async function fetchJSON(url) {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error("Could not load " + url);
+        }
+        return response.json();
+    }
+
+    function setText(id, value) {
+        document.getElementById(id).textContent = value ?? 0;
+    }
+
+    function renderTable(id, rows, emptyText, createRow) {
+        const body = document.getElementById(id);
+
+        if (!Array.isArray(rows) || rows.length === 0) {
+            body.innerHTML = "";
+            const tr = document.createElement("tr");
+            const td = document.createElement("td");
+            td.colSpan = id === "recentVisits" ? 5 : 2;
+            td.className = "status-message";
+            td.textContent = emptyText;
+            tr.appendChild(td);
+            body.appendChild(tr);
+            return;
+        }
+
+        body.replaceChildren();
+        rows.forEach(item => body.appendChild(createRow(item)));
+    }
+
+    function cell(text) {
+        const td = document.createElement("td");
+        td.textContent = text ?? "—";
+        return td;
+    }
+
+    function makeSimpleRow(name, count) {
+        const tr = document.createElement("tr");
+        tr.appendChild(cell(name));
+        tr.appendChild(cell(count));
+        return tr;
+    }
+
+    function loadChart(imageId, messageId, url) {
+        const img = document.getElementById(imageId);
+        const message = document.getElementById(messageId);
+
+        message.style.display = "none";
+        img.style.display = "block";
+
+        img.onload = () => {
+            img.style.display = "block";
+            message.style.display = "none";
+        };
+
+        img.onerror = () => {
+            img.style.display = "none";
+            message.style.display = "grid";
+        };
+
+        img.src = url + "?t=" + Date.now();
+    }
+
+    async function loadDashboard() {
+        try {
+            const data = await fetchJSON("/api/summary");
+            setText("patients", data.total_patients ?? data.patients);
+            setText("visits", data.total_visits ?? data.visits);
+            setText("departments", data.total_departments ?? data.departments);
+        } catch (error) {
+            console.error("Summary:", error);
+        }
+
+        try {
+            const rows = await fetchJSON("/api/departments");
+            renderTable("departmentTable", rows, "No department data found.", item =>
+                makeSimpleRow(
+                    item.department_name ?? item.name ?? item.department,
+                    item.visit_count ?? item.total_visits ?? item.visits ?? item.count ?? 0
+                )
+            );
+        } catch (error) {
+            console.error("Departments:", error);
+        }
+
+        try {
+            const rows = await fetchJSON("/api/age-analysis");
+            renderTable("ageTable", rows, "No age-group data found.", item =>
+                makeSimpleRow(
+                    item.age_band ?? item.age_group ?? item.age,
+                    item.visit_count ?? item.total_visits ?? item.visits ?? item.count ?? 0
+                )
+            );
+        } catch (error) {
+            console.error("Age analysis:", error);
+        }
+
+        try {
+            const rows = await fetchJSON("/api/monthly-visits");
+            renderTable("monthlyTable", rows, "No monthly data found.", item =>
+                makeSimpleRow(
+                    item.month_name ?? item.month_label ?? item.month,
+                    item.visit_count ?? item.total_visits ?? item.visits ?? item.count ?? 0
+                )
+            );
+        } catch (error) {
+            console.error("Monthly visits:", error);
+        }
+
+        loadChart("departmentChart", "departmentChartMessage", "/api/department-chart");
+        loadChart("ageChart", "ageChartMessage", "/api/age-chart");
+        loadChart("monthlyChart", "monthlyChartMessage", "/api/monthly-chart");
+
+        try {
+            const rows = await fetchJSON("/api/recent-visits");
+            renderTable("recentVisits", rows, "No visits have been recorded yet.", item => {
+                const tr = document.createElement("tr");
+
+                const patient = document.createElement("td");
+                const code = document.createElement("span");
+                code.className = "patient-code";
+
+                const dot = document.createElement("span");
+                dot.className = "patient-dot";
+                dot.innerHTML = '<i class="fa-solid fa-user"></i>';
+
+                const label = document.createElement("span");
+                label.textContent = "Patient #" + (item.patient_id ?? "—");
+
+                code.append(dot, label);
+                patient.appendChild(code);
+                tr.appendChild(patient);
+
+                tr.appendChild(cell(item.age_band));
+                tr.appendChild(cell(item.department_name));
+
+                const dateValue = item.visit_date
+                    ? String(item.visit_date).slice(0, 10)
+                    : "—";
+                tr.appendChild(cell(dateValue));
+
+                const typeCell = document.createElement("td");
+                const pill = document.createElement("span");
+                pill.className = "visit-pill";
+
+                const type = item.visit_type ?? "—";
+                if (type.toLowerCase() === "emergency") {
+                    pill.classList.add("emergency");
+                } else if (type.toLowerCase() === "follow-up") {
+                    pill.classList.add("follow-up");
+                }
+
+                pill.textContent = type;
+                typeCell.appendChild(pill);
+                tr.appendChild(typeCell);
+
+                return tr;
+            });
+        } catch (error) {
+            console.error("Recent visits:", error);
+            renderTable("recentVisits", [], "Recent activity needs the /api/recent-visits endpoint.", () => document.createElement("tr"));
+        }
+    }
+
+    loadDashboard();
+</script>
+
+</body>
+</html>

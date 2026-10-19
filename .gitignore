@@ -1,0 +1,12 @@
+
+venv/
+__pycache__/
+*.py[cod]
+.env
+*.log
+.git/
+check_constraint.py
+check_dates.py
+check_schema.py
+test_db.py
+update_dates.py

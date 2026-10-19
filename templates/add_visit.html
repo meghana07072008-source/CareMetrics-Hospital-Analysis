@@ -1,0 +1,960 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Patient Visit | CareMetrics</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --purple: #7047eb;
+            --purple-dark: #5630ce;
+            --purple-light: #f0ebff;
+            --background: #f7f8fc;
+            --text: #20243a;
+            --muted: #858ba3;
+            --border: #e9eaf2;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        button, input, select {
+            font: inherit;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 248px;
+            padding: 28px 18px;
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 10px;
+            margin-bottom: 42px;
+        }
+
+        .brand-icon {
+            width: 43px;
+            height: 43px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #8057f5, #6038d8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 21px;
+        }
+
+        .brand-name {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: -0.7px;
+        }
+
+        .brand-name span {
+            color: var(--purple);
+        }
+
+        .brand-subtitle {
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 10px;
+            letter-spacing: 1.1px;
+        }
+
+        .nav-label {
+            padding: 0 12px;
+            margin-bottom: 12px;
+            color: #a0a4b7;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 13px 14px;
+            margin-bottom: 7px;
+            border-radius: 10px;
+            color: #72788e;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .nav-link i {
+            width: 19px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--purple-light);
+            color: var(--purple);
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding: 17px;
+            border-radius: 13px;
+            background: linear-gradient(145deg, #f1edff, #faf9ff);
+        }
+
+        .sidebar-bottom i {
+            color: var(--purple);
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .sidebar-bottom h4 {
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .sidebar-bottom p {
+            font-size: 11px;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+
+        .main {
+            margin-left: 248px;
+            padding: 30px 38px 24px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .breadcrumb {
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 9px;
+        }
+
+        .breadcrumb i {
+            margin: 0 8px;
+            font-size: 10px;
+        }
+
+        .breadcrumb strong {
+            color: var(--purple);
+            font-weight: 600;
+        }
+
+        h1 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: clamp(23px, 3vw, 30px);
+            letter-spacing: -1px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 8px;
+            line-height: 1.7;
+        }
+
+        .top-badge {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 11px 15px;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 11px;
+            font-size: 12px;
+            color: #626980;
+            white-space: nowrap;
+        }
+
+        .top-badge i {
+            color: #2caa76;
+        }
+
+        .welcome-banner {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(115deg, #6940e5, #8964f5);
+            color: white;
+            padding: 26px 29px;
+            border-radius: 17px;
+            margin-bottom: 25px;
+        }
+
+        .welcome-banner::after {
+            content: "";
+            position: absolute;
+            width: 190px;
+            height: 190px;
+            border: 32px solid #ffffff16;
+            border-radius: 50%;
+            right: 35px;
+            top: -95px;
+        }
+
+        .banner-content {
+            position: relative;
+            z-index: 1;
+            max-width: 590px;
+        }
+
+        .banner-content .eyebrow {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .banner-content h2 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 22px;
+            margin-bottom: 9px;
+        }
+
+        .banner-content p {
+            font-size: 12px;
+            line-height: 1.8;
+            color: #eee8ff;
+            max-width: 510px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.7fr) minmax(235px, 0.85fr);
+            gap: 23px;
+            align-items: start;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 22px #22204405;
+            min-width: 0;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding-bottom: 20px;
+            margin-bottom: 21px;
+            border-bottom: 1px solid #f0f0f6;
+        }
+
+        .card-icon {
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: var(--purple-light);
+            color: var(--purple);
+            font-size: 17px;
+        }
+
+        .card-header h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .card-header p {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px 17px;
+        }
+
+        .field {
+            min-width: 0;
+        }
+
+        .field.full {
+            grid-column: 1 / -1;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 9px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #454a60;
+        }
+
+        .field label i {
+            margin-right: 7px;
+            color: var(--purple);
+        }
+
+        .field select,
+        .field input {
+            width: 100%;
+            height: 47px;
+            padding: 0 13px;
+            border: 1px solid #e3e5ef;
+            background: #fcfcfe;
+            border-radius: 9px;
+            color: #41465b;
+            font-size: 12px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .field select:focus,
+        .field input:focus {
+            border-color: var(--purple);
+            box-shadow: 0 0 0 3px #7047eb18;
+            background: white;
+        }
+
+        .field select:invalid {
+            color: #969bb0;
+        }
+
+        .field-hint {
+            color: #9a9eb0;
+            font-size: 10px;
+            line-height: 1.6;
+            margin-top: 7px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding-top: 23px;
+            margin-top: 25px;
+            border-top: 1px solid #f0f0f6;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            min-height: 43px;
+            padding: 0 17px;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .btn-primary {
+            color: white;
+            background: var(--purple);
+            box-shadow: 0 5px 12px #7047eb25;
+        }
+
+        .btn-primary:hover {
+            background: var(--purple-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            color: #656b80;
+            background: white;
+            border-color: #e5e6ef;
+        }
+
+        .btn-secondary:hover {
+            background: #f8f7ff;
+            border-color: #d6ccff;
+            color: var(--purple);
+        }
+
+        .flash-message {
+            padding: 13px 15px;
+            margin-bottom: 17px;
+            border-radius: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 12px;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .flash-message.success {
+            color: #187448;
+            background: #eaf8f0;
+            border: 1px solid #ccebd9;
+        }
+
+        .flash-message.error {
+            color: #a3333b;
+            background: #fff0f0;
+            border: 1px solid #f6d4d4;
+        }
+
+        .info-card {
+            margin-bottom: 18px;
+        }
+
+        .info-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
+
+        .info-card h3 i {
+            color: var(--purple);
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 17px;
+        }
+
+        .step:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-number {
+            width: 28px;
+            height: 28px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--purple-light);
+            color: var(--purple);
+            border-radius: 9px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .step h4 {
+            font-size: 12px;
+            margin: 2px 0 5px;
+        }
+
+        .step p {
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        .quality-card {
+            background: linear-gradient(145deg, #f1edff, #fbfaff);
+            border: 1px solid #e7e0ff;
+        }
+
+        .quality-card h3 {
+            color: #5332bc;
+        }
+
+        .quality-card p {
+            color: #77708f;
+            font-size: 11px;
+            line-height: 1.9;
+        }
+
+        .quality-card .privacy {
+            border-top: 1px solid #e3dcfa;
+            margin-top: 15px;
+            padding-top: 13px;
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+        }
+
+        .quality-card .privacy i {
+            color: #6940e5;
+            margin-top: 3px;
+        }
+
+        footer {
+            margin-top: 27px;
+            padding: 19px 0 5px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            color: #9a9eb0;
+            font-size: 10px;
+        }
+
+        footer strong {
+            color: #777d92;
+        }
+
+        @media (max-width: 1050px) {
+            .sidebar {
+                width: 210px;
+            }
+
+            .main {
+                margin-left: 210px;
+                padding: 25px;
+            }
+
+            .content-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .info-column {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 18px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                position: static;
+                width: 100%;
+                padding: 17px;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .brand {
+                margin-bottom: 20px;
+            }
+
+            .nav-label,
+            .sidebar-bottom {
+                display: none;
+            }
+
+            .nav-links {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .nav-link {
+                padding: 10px;
+                margin: 0;
+                font-size: 11px;
+                gap: 7px;
+            }
+
+            .nav-link i {
+                font-size: 13px;
+                width: auto;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 22px 15px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+            }
+
+            .top-badge {
+                display: none;
+            }
+
+            .welcome-banner {
+                padding: 22px;
+            }
+
+            .banner-content h2 {
+                font-size: 19px;
+            }
+
+            .card {
+                padding: 19px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 17px;
+            }
+
+            .field.full {
+                grid-column: auto;
+            }
+
+            .info-column {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                align-items: stretch;
+                flex-direction: column-reverse;
+            }
+
+            .form-actions .btn {
+                width: 100%;
+            }
+
+            footer {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <a href="{{ url_for('home') }}" class="brand">
+            <div class="brand-icon">
+                <i class="fa-solid fa-heart-pulse"></i>
+            </div>
+            <div>
+                <div class="brand-name">Care<span>Metrics</span></div>
+                <div class="brand-subtitle">HOSPITAL ANALYTICS</div>
+            </div>
+        </a>
+
+        <div class="nav-label">WORKSPACE</div>
+
+        <nav class="nav-links">
+            <a href="{{ url_for('home') }}" class="nav-link">
+                <i class="fa-solid fa-house"></i>
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('add_visit') }}" class="nav-link active">
+                <i class="fa-solid fa-calendar-plus"></i>
+                Patient Visits
+            </a>
+
+            <a href="{{ url_for('home') }}" class="nav-link">
+                <i class="fa-solid fa-hospital"></i>
+                Departments
+            </a>
+
+            <a href="{{ url_for('home') }}" class="nav-link">
+                <i class="fa-solid fa-chart-pie"></i>
+                Analytics
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <i class="fa-solid fa-shield-heart"></i>
+            <h4>Responsible Data</h4>
+            <p>Keep patient information accurate and use hospital data responsibly.</p>
+        </div>
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <div class="breadcrumb">
+                    Dashboard
+                    <i class="fa-solid fa-chevron-right"></i>
+                    Patient Visits
+                    <i class="fa-solid fa-chevron-right"></i>
+                    <strong>Add Visit</strong>
+                </div>
+
+                <h1>Add Patient Visit</h1>
+
+                <p class="subtitle">
+                    Record a hospital visit and keep your department data up to date.
+                </p>
+            </div>
+
+            <div class="top-badge">
+                <i class="fa-solid fa-circle-check"></i>
+                Hospital Records
+            </div>
+        </header>
+
+        <section class="welcome-banner">
+            <div class="banner-content">
+                <div class="eyebrow">PATIENT MANAGEMENT</div>
+                <h2>Record a new patient visit</h2>
+                <p>
+                    Enter the patient, department, date and visit type.
+                    Your information will be saved in the hospital database
+                    after you submit the form.
+                </p>
+            </div>
+        </section>
+
+        <div class="content-grid">
+
+            <section class="card">
+
+                <div class="card-header">
+                    <div class="card-icon">
+                        <i class="fa-solid fa-clipboard-list"></i>
+                    </div>
+                    <div>
+                        <h3>Visit Information</h3>
+                        <p>Complete all the required fields below.</p>
+                    </div>
+                </div>
+
+                {% for category, message in get_flashed_messages(with_categories=true) %}
+                    <div class="flash-message {{ category }}">
+                        {% if category == "success" %}
+                            <i class="fa-solid fa-circle-check"></i>
+                        {% else %}
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                        {% endif %}
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+
+                <form method="POST" action="{{ url_for('add_visit') }}">
+
+                    <div class="form-grid">
+
+                        <div class="field full">
+                            <label for="patient_id">
+                                <i class="fa-solid fa-user"></i>
+                                Select Patient *
+                            </label>
+
+                            <select id="patient_id" name="patient_id" required>
+                                <option value="">Choose a patient</option>
+
+                                {% for patient in patients %}
+                                    <option
+                                        value="{{ patient.patient_id }}"
+                                        {% if request.form.get('patient_id', '') == patient.patient_id|string %}selected{% endif %}
+                                    >
+                                        Patient {{ patient.patient_id }} -
+                                        {{ patient.age_band }}
+                                        {% if patient.gender %}
+                                            - {{ patient.gender }}
+                                        {% endif %}
+                                    </option>
+                                {% endfor %}
+                            </select>
+
+                            <p class="field-hint">
+                                Select the patient associated with this visit.
+                            </p>
+                        </div>
+
+                        <div class="field full">
+                            <label for="department_id">
+                                <i class="fa-solid fa-hospital"></i>
+                                Department *
+                            </label>
+
+                            <select id="department_id" name="department_id" required>
+                                <option value="">Choose a department</option>
+
+                                {% for department in departments %}
+                                    <option
+                                        value="{{ department.department_id }}"
+                                        {% if request.form.get('department_id', '') == department.department_id|string %}selected{% endif %}
+                                    >
+                                        {{ department.department_name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+
+                            <p class="field-hint">
+                                Choose the department handling the visit.
+                            </p>
+                        </div>
+
+                        <div class="field">
+                            <label for="visit_date">
+                                <i class="fa-regular fa-calendar"></i>
+                                Visit Date *
+                            </label>
+
+                            <input
+                                type="date"
+                                id="visit_date"
+                                name="visit_date"
+                                max="{{ today }}"
+                                value="{{ request.form.get('visit_date', '') }}"
+                                required
+                            >
+
+                            <p class="field-hint">
+                                Future dates are not allowed.
+                            </p>
+                        </div>
+
+                        <div class="field">
+                            <label for="visit_type">
+                                <i class="fa-solid fa-stethoscope"></i>
+                                Visit Type *
+                            </label>
+
+                            <select id="visit_type" name="visit_type" required>
+                                <option value="">Choose visit type</option>
+
+                                <option value="Appointment"
+                                    {% if request.form.get('visit_type') == 'Appointment' %}selected{% endif %}>
+                                    Appointment
+                                </option>
+
+                                <option value="Emergency"
+                                    {% if request.form.get('visit_type') == 'Emergency' %}selected{% endif %}>
+                                    Emergency
+                                </option>
+
+                                <option value="Follow-up"
+                                    {% if request.form.get('visit_type') == 'Follow-up' %}selected{% endif %}>
+                                    Follow-up
+                                </option>
+                            </select>
+
+                            <p class="field-hint">
+                                Identify the purpose of the visit.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="form-actions">
+                        <a href="{{ url_for('home') }}" class="btn btn-secondary">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            Back to Dashboard
+                        </a>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            Save Patient Visit
+                        </button>
+                    </div>
+
+                </form>
+
+            </section>
+
+            <aside class="info-column">
+
+                <section class="card info-card">
+                    <h3>
+                        <i class="fa-solid fa-lightbulb"></i>
+                        How it works
+                    </h3>
+
+                    <div class="step">
+                        <div class="step-number">01</div>
+                        <div>
+                            <h4>Select a patient</h4>
+                            <p>Choose the patient from the existing patient records.</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">02</div>
+                        <div>
+                            <h4>Enter visit details</h4>
+                            <p>Select a department, date and visit type.</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">03</div>
+                        <div>
+                            <h4>Save the record</h4>
+                            <p>Submit the form to store the visit in the database.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="card info-card quality-card">
+                    <h3>
+                        <i class="fa-solid fa-shield-halved"></i>
+                        Data Quality Matters
+                    </h3>
+
+                    <p>
+                        Accurate visit records help produce meaningful
+                        department summaries, monthly activity charts and
+                        age-group analysis.
+                    </p>
+
+                    <div class="privacy">
+                        <i class="fa-solid fa-lock"></i>
+                        <p>
+                            Use only authorized, appropriately protected
+                            patient information in this system.
+                        </p>
+                    </div>
+                </section>
+
+            </aside>
+
+        </div>
+
+        <footer>
+            <span>
+                <strong>CareMetrics</strong> · Hospital Patient Data Analysis System
+            </span>
+            <span>Patient Visit Management</span>
+        </footer>
+
+    </main>
+
+</body>
+</html>
